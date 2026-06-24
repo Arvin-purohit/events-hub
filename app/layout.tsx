@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
+import { PostHogProvider } from "./providers";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -33,8 +34,9 @@ export default function RootLayout({
       className={cn("min-h-screen", "antialiased", schibstedgrotesl.variable, martianmono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
+        <PostHogProvider>
    <div className="fixed inset-0 -z-10">
-    
+
     <LightRays
       raysOrigin="top-center"
       raysColor="#d91818"
@@ -51,8 +53,9 @@ export default function RootLayout({
     />
   </div>
     <Navbar />
-  
-        {children}</body>
+
+        {children}
+        </PostHogProvider></body>
     </html>
   );
 }
