@@ -157,6 +157,10 @@ const normalizeTime = (value: string): string => {
     if (period === "AM" && hour === 12) {
       hour = 0;
     }
+  } else {
+    if (hour < 0 || hour > 23) {
+      throw new Error("Invalid hour");
+    }
   }
 
   return `${hour.toString().padStart(2, "0")}:${minute
