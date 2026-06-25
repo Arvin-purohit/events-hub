@@ -35,9 +35,8 @@ const bookingSchema = new Schema<IBooking>(
 )
 
 bookingSchema.pre<IBooking>("save", async function () {
-  if (this.isModified("email")) {
-    this.email = this.email.trim().toLowerCase()
-  }
+  // Email field uses `trim` and `lowercase` setters at the schema level;
+  // avoid duplicating normalization here.
 
   if (this.isModified("eventId")) {
     const eventExists = await Event.exists({ _id: this.eventId })
@@ -46,6 +45,9 @@ bookingSchema.pre<IBooking>("save", async function () {
     }
   }
 })
+
+// Enforce one booking per user (email) per event
+bookingSchema.index({ eventId: 1, email: 1 }, { unique: true })
 
 export const Booking =
   mongoose.models.Booking || mongoose.model<IBooking>("Booking", bookingSchema)

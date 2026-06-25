@@ -106,7 +106,7 @@ const eventSchema = new Schema<IEvent>(
   }
 );
 
-eventSchema.index({ slug: 1 }, { unique: true });
+// `slug.unique` is declared on the field; avoid duplicating the index.
 
 const generateSlug = (title: string): string =>
   title
@@ -117,7 +117,16 @@ const generateSlug = (title: string): string =>
     .replace(/-+/g, "-");
 
 const normalizeDate = (value: string): string => {
-  const date = new Date(value);
+  const input = value.trim();
+
+  // If the value is a date-only string like YYYY-MM-DD, interpret as UTC
+  // to avoid host-timezone shifts. If it already contains a timezone offset
+  // (Z or ±HH:MM), let the Date parser handle it.
+  const dateOnlyMatch = /^\d{4}-\d{2}-\d{2}$/.test(input);
+
+  const isoInput = dateOnlyMatch ? `${input}T00:00:00Z` : input;
+
+  const date = new Date(isoInput);
 
   if (Number.isNaN(date.getTime())) {
     throw new Error("Invalid event date");
@@ -168,26 +177,11 @@ const normalizeTime = (value: string): string => {
     .padStart(2, "0")}`;
 };
 
-const requiredFields = [
-  "title",
-  "description",
-  "overview",
-  "venue",
-  "location",
-  "organizer",
-] as const;
-
 eventSchema.pre("save", function () {
   const event = this as IEvent;
 
-  for (const field of requiredFields) {
-    const value = event[field];
-
-    if (!value || value.trim().length === 0) {
-      throw new Error(`${field} cannot be empty`);
-    }
-  }
-
+  // Keep programmatic normalization for derived fields; rely on schema
+  // validators for required/trim checks.
   if (event.isModified("title")) {
     event.slug = generateSlug(event.title);
   }
