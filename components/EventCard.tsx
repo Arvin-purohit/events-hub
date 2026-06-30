@@ -10,7 +10,16 @@ interface Props {
     time: string
 }
 
+
 const EventCard = ({title , image , slug, location, date, time} : Props) => {
+    console.log({
+  title,
+  image,
+  slug,
+  location,
+  date,
+  time,
+});
   return (
     <Link href={`/events/${slug}`} id="event-card">
 
@@ -23,8 +32,14 @@ const EventCard = ({title , image , slug, location, date, time} : Props) => {
          
         <div className="datetime">
         <div>
-            <Image src={'icons/calendar.svg'} alt="date" height={14} width={14}></Image>
-            <p>{date}</p>
+            <Image src={'icons/calendar.svg'} alt="date" height={14} width={14} ></Image>
+            <p>
+  {new Date(date).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })}
+</p>
         </div>
 
         <div>
