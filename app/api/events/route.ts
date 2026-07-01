@@ -23,6 +23,17 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+    const maxBytes = 5 * 1024 * 1024;
+
+    if (!allowedTypes.has(file.type) || file.size > maxBytes) {
+      return NextResponse.json(
+        { message: "Image must be JPG, PNG, or WebP and <= 5MB" },
+        { status: 400 }
+      );
+    }
+
 const tagsRaw = formData.get("tags");
 const agendaRaw = formData.get("agenda");
 
