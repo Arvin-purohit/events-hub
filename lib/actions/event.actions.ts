@@ -13,6 +13,6 @@ export const getSimilarEventsBySlug = async (slug: string) => {
     tags: { $in: event?.tags ?? [] },
   }).lean();
 
-console.log("similarEvents:", JSON.stringify(similarEvents, null, 2));
+
 return similarEvents;
 };

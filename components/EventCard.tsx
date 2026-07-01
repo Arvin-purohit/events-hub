@@ -33,13 +33,9 @@ const EventCard = ({title , image , slug, location, date, time} : Props) => {
         <div className="datetime">
         <div>
             <Image src={'icons/calendar.svg'} alt="date" height={14} width={14} ></Image>
-            <p>
-  {new Date(date).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  })}
-</p>
+            
+  <p>{date.slice(0, 10)}</p>
+=
         </div>
 
         <div>

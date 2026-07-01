@@ -2,6 +2,7 @@ import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import { cacheLife } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -56,6 +57,8 @@ const EventDetailsPage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
+  
+  
   const { slug } = await params;
 
   const request = await fetch(`${BASE_URL}/api/events/${slug}`);
@@ -177,7 +180,7 @@ const EventDetailsPage = async ({
               ) : (
                 <p className="text-sm">Be the first to book your spots</p>
               )}
-              <BookEvent />
+              <BookEvent eventId={event._id} slug={event.slug} />
           </div>
         </aside>
       </div>
