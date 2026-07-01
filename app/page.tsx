@@ -1,9 +1,14 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
-import { events } from "@/lib/constants";
+import { IEvent } from "@/database";
+import { getEvents } from "@/lib/events";
+import { cacheLife } from "next/cache";
 
+export default async function Home() {
+  'use cache';
+  cacheLife('hours')
+  const events = await getEvents();
 
-export default function Home() {
   return (
     <main>
       <h1 className="text-center" >
@@ -15,8 +20,8 @@ export default function Home() {
       <div className="mt-20 space-y-7">
         <h3>Featured Events</h3>
         <ul className="events">
-          {events.map((event) => (
-            <li key={event.title}>
+          {events && events.length > 0 && events.map((event : IEvent) => (
+            <li key={event.title} className="list-none">
               <EventCard {...event} />
             </li>
           ))}
